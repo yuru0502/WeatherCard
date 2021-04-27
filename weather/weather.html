@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta http-equiv="X-UA-Compatible" content="IE=edge">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Weather</title>
+ <style>
+  *{
+      box-sizing: border-box;
+  }
+
+  html,body{
+      margin: 0;
+      padding: 5px 20px;
+      background-color:rgb(94, 164, 221);
+      /* background:linear-gradient(135deg,rgb(94, 164, 221), rgb(22, 62, 148)); ; */
+      /* background-image: url(./img/20080410185942935.jpg);
+      background-position: center;
+      background-size: cover; */
+      }
+
+
+
+  .header{
+      background:radial-gradient(circle at center,rgb(117, 171, 196),rgba(8, 37, 92, 0.808));
+      font-weight: bolder;
+      text-align: center;
+      color: white;
+      font-size: 16px;
+      border-radius: 60px;
+      margin-bottom: 20px;
+      padding: 5px;
+      line-height: 12px;
+     
+  }
+
+
+
+  .container{
+    display: flex;
+    flex-wrap: wrap;
+     justify-content: space-between;
+      
+  }
+
+
+  .card{
+      /* background-color: rgb(66, 93, 134); */
+      background:radial-gradient(circle at center,rgb(200, 216, 226),rgba(21, 75, 190, 0.836));
+      border-radius: 15px;
+      width:400px;
+      height: 300px;
+      margin-bottom: 2%;
+      position: relative;
+  }
+
+  .card:hover{
+      background:radial-gradient(circle at center,rgb(133, 181, 196),rgba(4, 30, 116, 0.808));
+      border: 2px solid rgb(197, 212, 221);
+  }
+
+.contain{
+  position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+      font-family: 微軟正黑體;
+      font-size: 18px;
+      text-align: center;
+      line-height: 30px;
+
+}
+
+  .name{
+    font-size: 30px;
+    font-weight:bolder;
+  }
+
+  .sun{
+    position: absolute;
+    left: 38%;
+    top: 6%;
+      animation:sunny 10s  infinite linear;
+
+  }
+
+@keyframes sunny {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }   
+}
+
+.cloud{
+  position: absolute;
+  left: 35%;
+  top: 15%;
+  animation:cloud 1s infinite alternate ;
+  
+}
+
+@keyframes cloud{
+  from {left:30%;}
+    to {left:36%;}
+}
+
+.clody1 ,.clody2{
+  position: absolute;
+    left: 38%;
+   
+}
+
+.clody1{
+  top: 6%;
+  animation: cloudy1 2s  infinite alternate;
+}
+
+.clody2{
+  top: 13%;
+  animation: cloudy2 2s  infinite alternate;
+}
+
+
+@keyframes cloudy1{
+  from {left:40%;}
+    to {left:30%;}
+}
+
+@keyframes cloudy2{
+  from {left:30%;}
+    to {left:40%;}
+}
+
+.rain1 , .rain2 ,.rain3 ,.rain4{
+  position: absolute;
+  top:26%
+}
+
+.rain1{
+  animation: rain1 1s  infinite ;
+}
+
+.rain2{
+  animation: rain2 1s  infinite ;
+}
+
+.rain3{
+  animation: rain3 1s  infinite ;
+ 
+}
+
+.rain4{
+  animation: rain4 1s  infinite ;
+ 
+}
+
+@keyframes rain1{
+  from {left:50%;top:34%,}
+    to {left:50%;top:35%}
+}
+
+@keyframes rain2{
+  from {left:45%;top:34%,}
+    to {left:45%;top:39%}
+}
+
+
+@keyframes rain3{
+  from {left:40%;top:34%,}
+    to {left:40%;top:37%}
+}
+
+@keyframes rain4{
+  from {left:35%;top:34%,}
+    to {left:35%;top:37%}
+}
+
+</style>
+</head>
+<body>
+ <div class="header">
+  <h1>每日氣象預報</h1>
+  <div class="date"></div>
+ </div>
+
+<div class="container">
+ </div>
+ 
+<script>
+
+  var date =document.querySelector('.date');
+  var today = new Date();
+  console.log(date);
+  date.innerHTML =`${today.getFullYear()}年${today.getMonth()+1}月${today.getDate()}日`;
+
+  var url =' https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-C0032-001?Authorization=CWB-A087132C-1E11-4478-85E1-0D44FE36DA87&format=JSON';
+    fetch(url)
+      .then(function(response) {
+        return response.text();
+      })
+    
+      .then(function(result) {
+        var data = JSON.parse(result);
+        // 地名 data["records"]["location"][5]["locationName"]);
+        var locations = data["records"]["location"];
+        console.log(locations);
+        var container = document.querySelector('.container');
+        container.innerHTML = '';
+        locations.forEach(function(location) {
+          console.log(location);
+        //   var condition = location["weatherElement"][0]["time"][0]["parameter"]["parameterName"];
+        var pop = location["weatherElement"][1]["time"][0]["parameter"]["parameterName"];
+        var sunny =document.querySelector('.sunny')
+        if (pop <= 5) {
+              container.innerHTML += `
+                            <div class="card">
+                            <img class="sun" src="./img/sun.png" alt="" style="width: 100px;height: 100px;"> 
+                            <div class="contain">
+                            <div class="name">${location["locationName"]}</div>
+                            <div class="temperature">${location["weatherElement"][2]["time"][0]["parameter"]["parameterName"]}ºc ~ ${location["weatherElement"][4]["time"][0]["parameter"]["parameterName"]}ºc </div>
+                            <div class="weather">${location["weatherElement"][0]["time"][0]["parameter"]["parameterName"]}</div>
+                            <div class="pop">${location["weatherElement"][1]["time"][0]["parameter"]["parameterName"]}%</div>
+                            </div>
+                            </div>
+                      `;
+        }else if (pop <= 10) {
+          container.innerHTML += `
+                            <div class="card">
+                            <img class="sun" src="./img/sun.png" alt="" style="width: 100px;height: 100px;"> 
+                            <img class="cloud" src="./img/cloud (1).png" alt="" style="width: 100px;height: 100px;">  
+                            <div class="contain">
+                            <div class="name">${location["locationName"]}</div>
+                            <div class="temperature">${location["weatherElement"][2]["time"][0]["parameter"]["parameterName"]}ºc ~ ${location["weatherElement"][4]["time"][0]["parameter"]["parameterName"]}ºc </div>
+                            <div class="weather">${location["weatherElement"][0]["time"][0]["parameter"]["parameterName"]}</div>
+                            <div class="pop">${location["weatherElement"][1]["time"][0]["parameter"]["parameterName"]}%</div>
+                            </div>
+                            </div>
+                      `;
+
+
+        }else if (pop <= 20) {
+          container.innerHTML += `
+                            <div class="card">
+                            <img class="clody1" src="./img/cloud (1).png" alt="" style="width: 100px;height: 100px;"> 
+                            <img class="clody2" src="./img/cloud-computing.png" alt="" style="width: 100px;height: 100px;"> 
+                            <div class="contain">
+                            <div class="name">${location["locationName"]}</div>
+                            <div class="temperature">${location["weatherElement"][2]["time"][0]["parameter"]["parameterName"]}ºc ~ ${location["weatherElement"][4]["time"][0]["parameter"]["parameterName"]}ºc </div>
+                            <div class="weather">${location["weatherElement"][0]["time"][0]["parameter"]["parameterName"]}</div>
+                            <div class="pop">${location["weatherElement"][1]["time"][0]["parameter"]["parameterName"]}%</div>
+                          </div>
+                            </div>
+                      `;
+
+
+        }else if (pop <= 40) {
+          container.innerHTML += `
+                            <div class="card">
+                            <img class="clody1" src="./img/cloud4.png" alt="" style="width: 100px;height: 100px;"> 
+                            <img class="clody2" src="./img/cloud.png" alt="" style="width: 100px;height: 100px;"> 
+                            <div class="contain">
+                            <div class="name">${location["locationName"]}</div>
+                            <div class="temperature">${location["weatherElement"][2]["time"][0]["parameter"]["parameterName"]}ºc ~ ${location["weatherElement"][4]["time"][0]["parameter"]["parameterName"]}ºc </div>
+                            <div class="weather">${location["weatherElement"][0]["time"][0]["parameter"]["parameterName"]}</div>
+                            <div class="pop">${location["weatherElement"][1]["time"][0]["parameter"]["parameterName"]}%</div>
+                            </div>
+                            </div>
+                      `;
+
+
+        }else if (pop <= 50) {
+          container.innerHTML += `
+                            <div class="card">
+                              <img class="rain1" src="./img/drop.png" alt="" style="width: 20px;height: 20px;">
+                              <img class="rain2" src="./img/drop.png" alt="" style="width: 20px;height: 20px;">
+                              <img class="rain3" src="./img/drop.png" alt="" style="width: 20px;height: 20px;">
+                              <img class="clody1" src="./img/cloud.png" alt="" style="width: 100px;height: 100px;">
+                              <div class="contain">
+                            <div class="name">${location["locationName"]}</div>
+                            <div class="temperature">${location["weatherElement"][2]["time"][0]["parameter"]["parameterName"]}ºc ~ ${location["weatherElement"][4]["time"][0]["parameter"]["parameterName"]}ºc </div>
+                            <div class="weather">${location["weatherElement"][0]["time"][0]["parameter"]["parameterName"]}</div>
+                            <div class="pop">${location["weatherElement"][1]["time"][0]["parameter"]["parameterName"]}%</div>
+                          </div>
+                            </div>
+                      `;
+
+
+        }else {
+          container.innerHTML += `
+                            <div class="card">
+                              <img class="rain1" src="./img/flash.png" alt="" style="width: 25px;height: 25px;">
+                              <img class="rain2" src="./img/drop.png" alt="" style="width: 20px;height: 20px;">
+                              <img class="rain3" src="./img/flash.png" alt="" style="width: 25px;height: 25px;">
+                              <img class="rain4" src="./img/drop.png" alt="" style="width: 20px;height: 20px;">
+                              <img class="clody1" src="./img/cloud.png" alt="" style="width: 100px;height: 100px;">
+                              <div class="contain">
+                            <div class="name">${location["locationName"]}</div>
+                            <div class="temperature">${location["weatherElement"][2]["time"][0]["parameter"]["parameterName"]}ºc ~ ${location["weatherElement"][4]["time"][0]["parameter"]["parameterName"]}ºc </div>
+                            <div class="weather">${location["weatherElement"][0]["time"][0]["parameter"]["parameterName"]}</div>
+                            <div class="pop">${location["weatherElement"][1]["time"][0]["parameter"]["parameterName"]}%</div>
+                          </div>
+                            </div>
+                      `;
+        }
+      });
+      // https://opendata.cwb.gov.tw/opendatadoc/MFC/D0047.pdf  
+    });
+    </script>
+</body>
+</html>
