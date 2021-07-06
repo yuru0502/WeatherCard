@@ -70,7 +70,7 @@
       transform: translateX(-50%);
       color: white;
       font-family: 微軟正黑體;
-      font-size: 18px;
+      font-size: 16px;
       text-align: center;
       line-height: 30px;
 
@@ -266,10 +266,11 @@
       .then(function (response) {
         return response.text();
       })
-
+      
       .then(function (result) {
         var data = JSON.parse(result);
         // 地名 data["records"]["location"][5]["locationName"]);
+        console.log(data);
         var locations = data["records"]["location"];
         console.log(locations);
         var container = document.querySelector('.container');
